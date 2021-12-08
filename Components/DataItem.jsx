@@ -1,40 +1,38 @@
 import React from 'react'
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
-import Swipeable from 'react-native-gesture-handler/Swipeable'
 import { useNavigation } from '@react-navigation/native'
 
-const DataItem = ({ item, renderRightAction }) => {
+const DataItem = ({ item }) => {
 
     const navigation = useNavigation();
     return (
-        <Swipeable renderRightActions={renderRightAction}>
-            <TouchableOpacity onPress={() => navigation.navigate("DetailsScreen", { data: item })}>
-                <View style={styles.itemContainer}>
-                    <View style={styles.countryInfo}>
-                        <Text style={styles.countryName}>{item.country}</Text>
-                        <Image style={styles.flag} source={{ uri: `${item.countryInfo.flag}` }} />
+        <TouchableOpacity onPress={() => navigation.navigate("DetailsScreen", { data: item })}>
+            <View style={styles.itemContainer}>
+                <View style={styles.countryInfo}>
+                    <Text style={styles.countryName}>{item.country}</Text>
+                    <Image style={styles.flag} source={{ uri: `${item.countryInfo.flag}` }} />
+                </View>
+                <View style={styles.numbers}>
+                    <View style={styles.total}>
+                        <Text style={styles.totalText}>Total</Text>
+                        <Text style={styles.totalNumber}>{item.cases}</Text>
                     </View>
-                    <View style={styles.numbers}>
-                        <View style={styles.total}>
-                            <Text style={styles.totalText}>Total</Text>
-                            <Text style={styles.totalNumber}>{item.cases}</Text>
-                        </View>
-                        <View style={styles.active}>
-                            <Text style={styles.activeText}>Active</Text>
-                            <Text style={styles.activeNumber}>{item.active}</Text>
-                        </View>
-                        <View style={styles.deaths}>
-                            <Text style={styles.deathsText}>Deaths</Text>
-                            <Text style={styles.deathsNumber}>{item.deaths}</Text>
-                        </View>
-                        <View style={styles.recovered}>
-                            <Text style={styles.recoveredText}>Recovered</Text>
-                            <Text style={styles.recoveredNumber}>{item.recovered}</Text>
-                        </View>
+                    <View style={styles.active}>
+                        <Text style={styles.activeText}>Active</Text>
+                        <Text style={styles.activeNumber}>{item.active}</Text>
+                    </View>
+                    <View style={styles.deaths}>
+                        <Text style={styles.deathsText}>Deaths</Text>
+                        <Text style={styles.deathsNumber}>{item.deaths}</Text>
+                    </View>
+                    <View style={styles.recovered}>
+                        <Text style={styles.recoveredText}>Recovered</Text>
+                        <Text style={styles.recoveredNumber}>{item.recovered}</Text>
                     </View>
                 </View>
-            </TouchableOpacity>
-        </Swipeable>
+            </View>
+        </TouchableOpacity>
+
     )
 }
 

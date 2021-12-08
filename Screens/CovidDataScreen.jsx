@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, Platform } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, Platform, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'
 import useApi from '../Hooks/useApi';
 import getCovidData, { Api } from '../Api/CovidApi';
-import DataList from '../Components/DataList'
-import DataItem from '../Components/DataItem';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import { connect } from 'react-redux';
 import * as Actions from '../Redux/actions';
+import DataList from '../Components/DataList';
+
 
 
 function CovidDataScreen(props) {
@@ -17,48 +17,32 @@ function CovidDataScreen(props) {
 
     const systemApi = Api();
 
-    const { loading, error, data: covidData } = useApi(async () => await systemApi.getCovidData());
-    const [fetchedData, setFetchedData] = useState([]);
-    const [dataError, setDataError] = useState(false);
-    const [dataLoading, setDataLoading] = useState(false);
+    const { reload, loading, error, lastUpdated, data: covidData } = useApi(async () => await systemApi.getCovidData());
     const [showSearch, setShowSearch] = useState(false);
     const [input, setInput] = useState("");
-    const [newData, setNewData] = useState([]);
+
 
     const toggleSearchBar = () => {
         setShowSearch(true)
-    }
+    };
 
     //Save data to Redux
     props.updateData(covidData);
 
 
-    useEffect(() => {
-
-        setFetchedData(covidData);
-
-
-    }, [])
-
     //seach data
     const searchCovidData = () => {
-        const newData = covidData.filter(item => item.country.includes(input));
-        setFetchedData(newData);
-        setNewData(newData);
-    }
+        return covidData.filter(item => item.country.includes(input));
+    };
 
-    //delete
-    const deleteData = (itemToDelete) => {
-        const newData = fetchedData.filter(item => item.country !== itemToDelete);
-        setFetchedData(newData);
-        setNewData(newData);
-    }
 
     if (error) {
-        return <View><Text>{dataError}</Text></View>
+        return <View><Text>{error}</Text></View>
     }
     if (loading) {
-        return <View><Text>loading...</Text></View>
+        return <SafeAreaView style={styles.container}>
+            <Text style={{ color: "#eac454", fontSize: 15, fontWeight: "700" }}>Loading...</Text>
+        </SafeAreaView>
     }
     return (
         <SafeAreaView style={styles.container}>
@@ -81,7 +65,10 @@ function CovidDataScreen(props) {
                     </View>
                 </View>
             }
-            <DataList data={covidData} deleteObject={deleteData} />
+            <View>
+                <Text style={styles.lastUpdated}>Last updated : {lastUpdated}</Text>
+            </View>
+            <DataList data={searchCovidData()} refreshData={reload} loading={loading} />
         </SafeAreaView>
     )
 }
@@ -120,6 +107,15 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontSize: 20
     },
+    listContainer: {
+        flex: 1,
+        width: "100%",
+        marginTop: Platform.OS === "android" ? 100 : 25,
+    },
+    lastUpdated: {
+        marginTop: 10,
+        color: "#7f807d"
+    }
 
 })
 

@@ -1,11 +1,9 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, View, FlatList, SafeAreaView, Platform } from 'react-native'
 import DataItem from './DataItem'
-import SwipeDeleteItem from './SwipeDeleteItem'
 
-const DataList = ({ data, deleteObject }) => {
+const DataList = ({ data, loading, refreshData }) => {
 
-    const [filteredData, setFilteredData] = useState(data);
 
     return (
         <SafeAreaView style={styles.listContainer} >
@@ -16,13 +14,12 @@ const DataList = ({ data, deleteObject }) => {
                     renderItem={({ item }) => (
                         <DataItem
                             item={item}
-                            renderRightAction={() =>
-                                <SwipeDeleteItem deleteItem={() => deleteObject(item.country)} />
-                            }
 
                         />
                     )
                     }
+                    refreshing={loading}
+                    onRefresh={refreshData}
                 />
             </View>
         </SafeAreaView>

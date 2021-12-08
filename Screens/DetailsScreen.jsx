@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, SafeAreaView, Image, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Image, Dimensions, TouchableOpacity } from 'react-native';
 import { CountUp } from 'use-count-up';
 import { VictoryChart, VictoryBar, VictoryTheme, VictoryLabel } from "victory-native";
 import { Ionicons } from '@expo/vector-icons'
 import { Platform } from 'expo-modules-core';
+import { useNavigation } from '@react-navigation/native';
 
-export default function DetailsScreen({ navigation, route }) {
+export default function DetailsScreen({ route }) {
 
     const { data } = route.params;
-
+    const navigation = useNavigation();
     const chartData = [
         {
             label: "cases",
@@ -54,6 +55,11 @@ export default function DetailsScreen({ navigation, route }) {
 
     return (
         <SafeAreaView style={styles.container}>
+            <View style={styles.backIcon}>
+                <TouchableOpacity onPress={() => navigation.navigate("CovidDataScreen")}>
+                    <Ionicons name="arrow-back" size={30} color={"#eac454"} />
+                </TouchableOpacity>
+            </View>
             <View style={styles.headContainer}>
                 <Image style={styles.countryFlag} source={{ uri: `${data.countryInfo.flag}` }} />
                 <Text style={styles.countryName}>{data.country}</Text>
@@ -125,6 +131,13 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: 'center',
         justifyContent: 'space-evenly',
+    },
+    backIcon: {
+        width: "90%",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "flex-start"
     },
 
     headContainer: {
